@@ -4,6 +4,7 @@ import Signin from './pages/Signin'
 import Blog from './pages/Blog'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
+import EditBlog from './pages/EditBlog'
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/blog/:id" element={<Blog />} />
           <Route path="/" element={<Home />} />
+          <Route path="/editor" element={<EditBlog />} />
           <Route path="/notfound" element={<NotFound />} />
           <Route path="/*" element={<Navigate to="/notfound" replace />} />
         </Routes>
