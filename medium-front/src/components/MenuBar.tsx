@@ -12,7 +12,7 @@ const MenuBar = ({editor}: MenuBarProps) => {
     }
   
     return (
-      <div className='m-2 p-2 grid grid-cols-10 lg:flex lg:justify-between lg:items-center'>
+      <div className='m-2 p-2 grid grid-cols-10 lg:flex lg:justify-between lg:items-center bg-[#ff9604] rounded-md'>
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={

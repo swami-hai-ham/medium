@@ -38,6 +38,11 @@ const EditBlog = () => {
   const [output, setOutput] = useState("");
   const editor = useEditor({
     extensions,
+    injectCSS:false,
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none px-14 mb-5',
+    }},
     content,
   });
 
@@ -50,7 +55,7 @@ const EditBlog = () => {
   };
 
   return (
-    <div className="m-3 p-3">
+    <div className="">
       {editor ? (
         <MenuBar editor={editor} />
       ) : (
@@ -58,7 +63,7 @@ const EditBlog = () => {
       )}
       <EditorContent editor={editor} />
       {editor && (
-        <button onClick={handleGetContent} className="bg-red-400 p-2 rounded-md">
+        <button onClick={handleGetContent} className="bg-red-400 p-2 rounded-md ml-14 mb-5">
           Get Content guys
         </button>
       )}
