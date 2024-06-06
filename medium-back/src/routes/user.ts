@@ -27,17 +27,30 @@ userRouter.post('/signup', async (c) => {
 	}
 
 	try {
+
+		const alduser = await prisma.user.findFirst({
+			where:{
+				email:body.username,
+				password: body.password
+			}
+		})
+		if(alduser){
+			return c.json({
+				"message": "user already exists"
+			})
+		}
 		const user = await prisma.user.create({
 			data: {
-				email: body.email,
-				password: body.password
+				email: body.username,
+				password: body.password,
+				name: body.name
 			}
 		});
 		const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
 		return c.json({ jwt });
 	} catch(e) {
 		c.status(403);
-		return c.json({ error: "error while signing up" });
+		return c.json({ error: e, body});
 	}
 })
 
@@ -58,7 +71,8 @@ userRouter.post('/signin', async (c) => {
 
 	const user = await prisma.user.findUnique({
 		where: {
-			email: body.email
+			email: body.username,
+			password: body.password
 		}
 	});
 

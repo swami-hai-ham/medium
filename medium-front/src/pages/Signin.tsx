@@ -28,7 +28,7 @@ const Signin = () => {
             type="password"
           />
           <SubmitButton Title="Sign in"/>
-          <Google text="Sign in with google"/>
+          <Google text="Continue with google"/>
       </div>
       
       <div className="relative h-full w-1/2 md:flex justify-center items-center text-white flex-col p-4 hidden bg-[url('/bgart.png')]">
