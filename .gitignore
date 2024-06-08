@@ -1,7 +1,5 @@
 dist
 node_modules
-# Wrangler files
-.wrangler
 
-# Environment variables
+.toml
 .env
