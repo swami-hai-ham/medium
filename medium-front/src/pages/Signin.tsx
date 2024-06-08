@@ -1,14 +1,21 @@
 import Input from "../components/Input";
 import Label from "../components/Label";
-import SubmitButton from './../components/SubmitButton';
+// import SubmitButton from './../components/SubmitButton';
 import Google from "../components/Google";
 import { useState } from "react";
+import {sigininInput} from '@swamihaihum/medium-common'
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  console.log(email, password);
+  const[error, setError] = useState(false);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  // console.log(email, password);
 
   return (
     <div className="relative flex flex-col justify-center items-center h-screen w-full ">
@@ -27,8 +34,38 @@ const Signin = () => {
             onChange={(e) => {setPassword(e.target.value)}} 
             type="password"
           />
-          <SubmitButton Title="Sign in"/>
-          <Google text="Continue with google"/>
+          {error && <div className="text-red-400">Email should be valid and password 5+ characters</div>}
+          <div className='m-2 h-12 w-[70%] shadow-[rgba(0,0,15,0.5)_5px_5px_5px_0px]'>
+            <button className='bg-[#ff9604] h-full w-full rounded-md font-mono text-lg focus:bg-[#8f5e2d]' onClick={() => {
+              const success = sigininInput.safeParse({username: email, password: password})
+              if(!success || password.length < 5){
+                setError(true);
+              }else{
+                setError(false)
+                setLoading(true)
+                axios.post("https://medium-back.swamiatharva15104.workers.dev/api/v1/user/signin", {
+                  "username": email,
+                  "password": password
+                }).then(response => {
+                  console.log(response);
+                  localStorage.setItem("token", response.data.jwt);
+                  navigate('/');
+                }).catch(error => {
+                    console.log(error)
+                });
+              }
+              
+              }}>
+                {loading ? <Spinner /> : "Signin"}
+              </button>
+          </div>
+          <div className="m-2 h-12 bg-white border-[#0b45543f] w-[70%] shadow-[rgba(0,0,15,0.5)_5px_5px_5px_0px] text-black flex justify-center items-center rounded-lg focus:bg-gray-300" onClick={() => {setLoading(true)}}>
+          <Google text="Sign in with google" signup={false}/>
+          </div>
+          <div className="flex justify-center items-center">
+            Do not have an account? 
+            <Link to={"/signup"} className="m-2 underline">Signup</Link>
+          </div>
       </div>
       
       <div className="relative h-full w-1/2 md:flex justify-center items-center text-white flex-col p-4 hidden bg-[url('/bgart.png')]">

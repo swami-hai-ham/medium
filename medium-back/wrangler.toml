@@ -1,5 +1,7 @@
-name = "backend"
+name = "medium-back"
 compatibility_date = "2023-12-01"
+type = "typescript"
+main = "./src/index.ts"
 
 
 [vars]

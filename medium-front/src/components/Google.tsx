@@ -1,19 +1,44 @@
 import React from 'react';
 import { signInWithGoogle } from "../firebase/firebase";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 interface Text {
   text: string;
+  signup: boolean;
 }
 
-const Google: React.FC<Text> = ({ text }) => {
+const Google: React.FC<Text> = ({ text, signup }) => {
+  const navigate = useNavigate()
   const handleLogin = async () => {
     try {
       const user = await signInWithGoogle();
-      const token = await user.getIdToken();
-
-      // Send token to your backend
-      console.log(user);
-      console.log(token)
+      // const token = await user.getIdToken();
+      if(signup){
+        axios.post("https://medium-back.swamiatharva15104.workers.dev/api/v1/user/signup", {
+          "username": user.email,
+          "password": user.uid,
+          "name": user.displayName
+        }).then(response => {
+          console.log(response);
+          localStorage.setItem("token", response.data.jwt);
+          navigate('/');
+        }).catch(error => {
+            console.log(error)
+        });
+      }else{
+        axios.post("https://medium-back.swamiatharva15104.workers.dev/api/v1/user/signin", {
+          "username": user.email,
+          "password": user.uid
+        }).then(response => {
+          console.log(response);
+          localStorage.setItem("token", response.data.jwt);
+          navigate('/');
+        }).catch(error => {
+            console.log(error)
+        });
+      }      
     } catch (e) {
       console.log(e);
     }
@@ -21,7 +46,7 @@ const Google: React.FC<Text> = ({ text }) => {
 
   return (
     <button
-      className='m-2 h-12 bg-white border-[3px] border-[#0b45543f] w-[70%] shadow-[rgba(0,0,15,0.5)_5px_5px_5px_0px] text-black flex justify-center items-center rounded-lg focus:bg-gray-300'
+      className=' bg-white border-[3px] border-[#0b45543f] w-full h-full shadow-[rgba(0,0,15,0.5)_5px_5px_5px_0px] text-black flex justify-center items-center rounded-lg focus:bg-gray-300'
       onClick={handleLogin}
     >
       <svg width="20" height="19" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" className='m-2'>

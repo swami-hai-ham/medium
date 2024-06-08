@@ -1,8 +1,12 @@
+import { useEffect } from 'react'
 import BlogComp from '../components/BlogComp'
 import Filter from '../components/Filter'
 import Nav from '../components/Nav'
 
 const Home = () => {
+  useEffect(() => {
+    
+  }, [])
   return (
     <div>
       <Nav />
