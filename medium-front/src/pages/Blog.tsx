@@ -3,6 +3,10 @@ import { Color } from '@tiptap/extension-color'
 import ListItem from '@tiptap/extension-list-item'
 import TextStyle from '@tiptap/extension-text-style'
 import StarterKit from '@tiptap/starter-kit'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
+import axios from 'axios'
 
 const extensions = [
   Color.configure({ types: [TextStyle.name, ListItem.name] }),
@@ -19,40 +23,37 @@ const extensions = [
   }),
 ]
 
-const content = `
-<h2>
-  Hi there,
-</h2>
-<p>
-  this is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:
-</p>
-<ul>
-  <li>
-    That’s a bullet list with one …
-  </li>
-  <li>
-    … or two list items.
-  </li>
-</ul>
-<p>
-  Isn’t that great? And all of that is editable. But wait, there’s more. Let’s try a code block:
-</p>
-<pre><code class="language-css">body {
-display: none;
-}</code></pre>
-<p>
-  I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.
-</p>
-<blockquote>
-  Wow, that’s amazing. Good work, boy! 👏
-  <br />
-  — Mom
-</blockquote>
-`
 
 const Blog = () => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [blog, setBlog] = useState({ id: "",title: "", content: "", authorId:"", createdAt: ""});
+  const navigate = useNavigate();
+  const { id } = useParams();
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if(!token){
+      navigate('/signup')
+    }else{
+      axios.get(`https://medium-back.swamiatharva15104.workers.dev/api/v1/blog/${id}`, {headers:{
+        "Authorization": `Bearer ${localStorage.getItem('token')}`
+      }}).then(response => {
+        console.log(response.data);
+        setBlog(response.data.blog);
+        setTitle(response.data.blog.title);
+        setContent(response.data.blog.content);
+      })
+    }
+  }, [id, navigate])
+  
+  if (content == "") {
+    return <div>Loading...</div>; // Or any other loading indicator
+  }
   return (
-    <div className='m-10'>
+    blog && <div className='m-10'>
+      <div className="flex justify-center items-start h-auto w-[90%] m-3 p-6 flex-col bg-gray-300">
+        <div className="font-athiti font-bold text-4xl m-4">{title}</div>
+      </div>
       <EditorProvider extensions={extensions} content={content} editable={false} injectCSS={false} editorProps={{
         attributes:{
           class:"prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none px-14"

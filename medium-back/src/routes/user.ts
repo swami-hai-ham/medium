@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { sign } from 'hono/jwt'
 import { sigininInput, signupInput } from "@swamihaihum/medium-common";
+import { decode, verify } from "hono/jwt";
 
 export const userRouter = new Hono<{
 	Bindings: {
@@ -10,6 +11,28 @@ export const userRouter = new Hono<{
 		JWT_SECRET: string,
 	}
 }>();
+
+userRouter.get("/user",async (c) => {
+    const authHeader = c.req.header("authorization") || "";
+    const user = await verify(authHeader.split(" ")[1], c.env.JWT_SECRET);
+	if(!user){
+		return c.json({"msg": "wrong inputs"})
+	}
+	const prisma = new PrismaClient({
+		datasourceUrl: c.env?.DATABASE_URL	,
+	}).$extends(withAccelerate());
+	const userOne = await prisma.user.findFirst({
+		where:{
+			id: user.id || ""
+		},
+		select:{
+			id:true,
+			email:true,
+			name:true
+		}
+	})
+	return c.json({ user : userOne})
+})
 
 userRouter.post('/signup', async (c) => {
 	const prisma = new PrismaClient({
