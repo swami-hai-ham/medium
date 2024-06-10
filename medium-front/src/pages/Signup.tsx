@@ -59,14 +59,14 @@ const Signup = () => {
                 });
               }
               
-              }}>{loading ? <Spinner /> : "Signin"}</button>
+              }}>{loading ? <Spinner /> : "Signup"}</button>
           </div>
           <div className="m-2 h-12 bg-white border-[#0b45543f] w-[70%] shadow-[rgba(0,0,15,0.5)_5px_5px_5px_0px] text-black flex justify-center items-center rounded-lg focus:bg-gray-300" onClick={() => {setLoading(true)}}>
           <Google text="Sign up with google" signup={true}/>
           </div>
           <div className="flex justify-center items-center">
             Already have an account? 
-            <Link to={"/signin"} className="m-2 underline">Signin</Link>
+            <Link to={"/signin"} className="m-2 underline">Signup</Link>
           </div>
       </div>
       
